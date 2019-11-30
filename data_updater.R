@@ -1,34 +1,7 @@
-# setwd("/home/jacobmalcom/open/five_year_review")
+# setwd()
 
-library(digest)
-library(readr)
+library(rvest)
 
-cur_lis <- read_csv("ESA_listed.csv")
-listed <- read_csv("https://ecos.fws.gov/ecp/pullreports/catalog/species/report/species/export?format=csv&distinct=true&columns=%2Fspecies%40sn%2Ccn%2Cstatus%2Cdesc%2Clisting_date%2Ccountry%3B%2Fspecies%2Ftaxonomy%40group%3B%2Fspecies%2Ffws_region%40desc&sort=%2Fspecies%40sn%20asc&filter=%2Fspecies%40country%20!%3D%20'Foreign'&filter=%2Fspecies%40status%20in%20('Endangered'%2C'Threatened')")
-
-if(dim(listed)[1] < 1000) {
-  stop("Something is amiss.")
-} else {
-  if(digest(listed) !=  digest(cur_lis)) { 
-    file.rename("ESA_listed.csv", 
-                paste0("ESA_listed", Sys.Date(), ".csv"))
-    write_csv(listed, "ESA_listed.csv")
-    print("File backed up and new data written.")
-  } else {
-    print("No listing changes.")
-  }
-}
-
-cur_5yr <- read_csv("5yr_data.csv")
-fiveyr <- read_csv("https://ecos.fws.gov/ecp/pullreports/catalog/species/report/species/export?format=csv&distinct=true&columns=%2Fspecies%40sn%2Ccn%2Cstatus%2Cdesc%2Clisting_date%2Ccountry%3B%2Fspecies%2Fdocument%40doc_date%2Ctitle&sort=%2Fspecies%40cn%20asc%3B%2Fspecies%40sn%20asc%3B%2Fspecies%40country%20desc&filter=%2Fspecies%40status%20in%20('Endangered'%2C'Threatened')&filter=%2Fspecies%40country%20!%3D%20'Foreign'&filter=%2Fspecies%2Fdocument%40doc_type%20%3D%20'Five%20Year%20Review'")
-if(dim(fiveyr)[1] < 1000) {
-  stop("Something is amiss.")
-} else {
-  if(digest(fiveyr) !=  digest(cur_5yr)) { 
-    file.rename("5yr_data.csv", 
-                paste0("5yr_data", Sys.Date(), ".csv"))
-    write_csv(fiveyr, "5yr_data.csv")
-  } else {
-    print("no 5-year review change")
-  }
-}
+html <- read_html("https://ecos.fws.gov/ecp/pullreports/catalog/species/report/species/export?format=htmltable&distinct=true&columns=%2Fspecies%40cn%2Csn%2Cstatus%2Cdesc%2Clisting_date%3B%2Fspecies%2Ftaxonomy%40group%3B%2Fspecies%2Ffws_region%40desc&sort=%2Fspecies%40sn%20asc&filter=%2Fspecies%40status%20in%20('Endangered'%2C'Threatened')&filter=%2Fspecies%40country%20!%3D%20'Foreign'")
+tab <- html_table(html)[[1]]
+saveRDS(tab, "ESA_listings.rds")

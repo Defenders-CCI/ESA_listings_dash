@@ -131,23 +131,26 @@ a:visited {
   font-family: sans-serif !important;
 }
 
-.bg-danger {
-  background-color: #C41230;
-}
-
 .bg-info {
   background-color: #003B87;
   color: white;
   /* background-color: #8E4E8A; */
 }
 
-.bg-info > * > p {
+.bg-warning {
+  background-color: #E36F1E;
+}
+
+.bg-danger {
+  background-color: #C41230;
+}
+
+.bg-info > * > p,
+.bg-danger > * > p,
+.bg-warning > * > p {
   color: white;
 }
 
-.bg-success {
-  background-color: #387C2B;
-}
 
 #downloadSensData, #downloadDiscData {
   margin-bottom: 20px;

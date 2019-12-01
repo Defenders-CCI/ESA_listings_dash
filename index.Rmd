@@ -27,6 +27,8 @@ names(dat) <- c("common", "scientific", "status", "entity", "listing_date", "tax
                 "region")
 dat$listing_date <- mdy(dat$listing_date)
 dat$listing_year <- year(dat$listing_date)
+
+# This is for one NOAA species that has no date...
 dat$listing_year <- ifelse(is.na(dat$listing_year),
                            2016,
                            dat$listing_year)

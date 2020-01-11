@@ -67,6 +67,9 @@ usr_sel <- function(df, st, re) {
   if(re != "All") {
     df <- filter(df, df$region == re)
   }
+  # if(dim(df)[1] < 25) {
+  #   observe({ print(df)})
+  # }
   if(dim(df)[1] == 0) stop("No data matches.")
   return(df)
 }
@@ -95,9 +98,12 @@ renderPlotly({
                  a <- table(tmp$taxon) %>% as.data.frame(stringsAsFactors = FALSE)
                  year <- rep(x, length(a[[1]]))
                  a <- cbind(a, year)
+                 return(a)
   })
-  t3 <- bind_rows(t2)
-  names(t3) <- c("taxon", "n_spp", "year")
+  t3 <- bind_rows(t2) %>%
+    rename(year = year,
+           n_spp = Freq,
+           taxon = Var1)
 
   plot_ly(data = t3, x = ~year, y = ~n_spp, color = ~taxon, type = "bar") %>%
     layout(yaxis = list(title = "Number of species"),
